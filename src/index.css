@@ -1,0 +1,74 @@
+@import "tailwindcss";
+
+/* =========================
+   🎨 APP THEME (HRMS)
+   ========================= */
+@theme {
+  /* Brand */
+  --color-primary: #115e88;
+  --color-primary-light: #115e888f;
+
+  --color-secondary: #FF7A0F;
+  --color-secondary-light: #FFE6D2;
+  
+  /* Status */
+  --color-danger: #EF4444;
+  --color-error: #EF4414;
+  --color-success: #22C55E;
+
+  /* Backgrounds */
+  --color-background: #F3F4F6;
+  --color-background-card: #FFFFFF;
+
+  /* Text */
+  --color-text: #111827;
+  --color-title: #000000;
+  --color-subtitle: #6B7280;
+
+  /* Borders */
+  --color-border: #115e88;
+  --color-focus-border: #D1D5DB;
+
+  /* Neutrals */
+  --color-neutral-100: #F3F4F6;
+  --color-neutral-300: #D1D5DB;
+  --color-neutral-600: #4B5563;
+  --color-neutral-700: #374151;
+}
+
+:root {
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+}
+
+button {
+  cursor: pointer;
+}
+
+@layer utilities {
+  .bg-gradient-gray-blue {
+    background-image: linear-gradient(to right, #f9fafb, #eff6ff);
+  }
+  .bg-gradient-secondary {
+    background-image: linear-gradient(to right, #ff8c1a, #ff6800);
+  }
+  .bg-gradient-primary {
+    background-image: linear-gradient(135deg, #115e88 0%, #1a88c4 100%);
+  }
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 5px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
