@@ -19,7 +19,6 @@ import {
   FileText,
   BarChart3,
   SettingsIcon,
-  HelpCircle,
 } from "lucide-react";
 
 // Protected Route Component
