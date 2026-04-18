@@ -1,0 +1,104 @@
+/* Keyframes for animations */
+@keyframes slideUpFade {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-5px); }
+  100% { transform: translateY(0px); }
+}
+
+/* Page Header animation */
+.profiles-header {
+  animation: slideUpFade 0.6s ease-out forwards;
+}
+
+/* Summary Cards animation */
+.summary-card-green {
+  animation: slideUpFade 0.5s ease-out 0.1s forwards;
+  opacity: 0;
+}
+
+.summary-card-orange {
+  animation: slideUpFade 0.5s ease-out 0.2s forwards;
+  opacity: 0;
+}
+
+.summary-card-green:hover, .summary-card-orange:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.1);
+}
+
+/* Table Animation */
+.profiles-table-container {
+  animation: fadeIn 0.8s ease-out 0.3s forwards;
+  opacity: 0;
+}
+
+/* Row entrance animation class */
+.profile-row-item {
+  animation: slideUpFade 0.4s ease-out forwards;
+  opacity: 0;
+}
+
+/* Hover effects for rows */
+.profile-row-hover:hover {
+  background-color: #f8fafc !important;
+  transition: background-color 0.2s ease;
+}
+
+.profile-avatar-anim {
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.profile-row-hover:hover .profile-avatar-anim {
+  transform: scale(1.1);
+}
+
+/* Status Badge Pulse */
+.status-badge-pulse {
+  position: relative;
+}
+
+.status-badge-pulse::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 8px;
+  background: currentColor;
+  opacity: 0;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); opacity: 0.2; }
+  70% { transform: scale(1.1); opacity: 0; }
+  100% { transform: scale(1); opacity: 0; }
+}
