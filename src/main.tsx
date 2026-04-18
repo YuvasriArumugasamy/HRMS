@@ -3,7 +3,7 @@ import { createRoot } from "react-dom/client";
 import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
 import { store, persistor } from "./app/store";
-import AppRoutes from "./routes/AppRoutes";
+import App from "./App";
 import "./index.css";
 import { injectStore } from "@/core/api/api";
 
@@ -22,14 +22,14 @@ createRoot(rootElement).render(
             justifyContent: 'center', 
             alignItems: 'center', 
             height: '100vh', 
-            fontFamily: 'sans-serif' 
+            fontFamily: 'Outfit, sans-serif' 
           }}>
             Loading application...
           </div>
         } 
         persistor={persistor}
       >
-        <AppRoutes />
+        <App />
       </PersistGate>
     </Provider>
   </React.StrictMode>
