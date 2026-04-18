@@ -11,7 +11,6 @@ import { Dashboard } from "./pages/dashboard/Dashboard";
 import { PlaceholderPage } from "@/components/common/PlaceholderPage";
 import type { RootState } from "./app/store";
 import {
-  LayoutDashboard,
   Contact,
   UserCheck,
   Briefcase,
