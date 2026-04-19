@@ -34,7 +34,7 @@ export const MENU: Record<string, MenuItem[]> = {
     },
     {
       label: "Immigration Compliance",
-      path: "/immigration",
+      path: "/immigration-compliance",
       icon: Shield,
     },
     {

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Mail, ArrowRight, ShieldCheck, Shield, Lock, Eye, EyeOff } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
@@ -12,18 +12,19 @@ const DEFAULT_APP_CODE = "INFYCARE";
 export function Login() {
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
-  const { isLoading, error } = useSelector((state: RootState) => state.auth);
+  const { isLoading, error, isAuthenticated } = useSelector((state: RootState) => state.auth);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [AppCode, setAppCode] = useState(DEFAULT_APP_CODE);
   const [showPassword, setShowPassword] = useState(false);
 
-  // Redirect logic is currently handled by AppRoutes or disabled for testing
-  /*
+  // Auto-redirect if already logged in
   useEffect(() => {
-    // If you need auto-redirect, uncomment isAuthenticated from selector and use it here
-  }, [navigate]);
-  */
+    const isAuth = isAuthenticated || localStorage.getItem("isAuthenticated") === "true";
+    if (isAuth) {
+      navigate("/dashboard", { replace: true });
+    }
+  }, [isAuthenticated, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -50,10 +51,14 @@ export function Login() {
 
     // Handle successful login
     if (result.type === loginUser.fulfilled.type) {
+      const userData = (result as any).payload.user;
       localStorage.setItem("isAuthenticated", "true");
       localStorage.setItem("userEmail", email);
+      if (userData?.role) localStorage.setItem("userRole", userData.role);
+      if (userData?.name) localStorage.setItem("userName", userData.name);
+      
       // Manual redirect since auto-redirect is disabled
-      navigate("/home");
+      navigate("/dashboard");
     }
   };
 

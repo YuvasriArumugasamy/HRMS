@@ -4,9 +4,11 @@ import { useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
 import type { RootState } from "../app/store";
 import { MENU, type MenuItem } from "./menu";
+import { generateInitials } from "@/core/utils/helpers";
 
 export default function Sidebar() {
-  const { role } = useSelector((state: RootState) => (state as any).auth);
+  const { user } = useSelector((state: RootState) => state.auth);
+  const role = user?.role;
 
   const normalizedRole = (role as string)?.toLowerCase() || "admin";
   const menuItems: MenuItem[] = MENU[normalizedRole] || [];
@@ -109,17 +111,21 @@ export default function Sidebar() {
             className="w-12 h-12 rounded-full flex items-center justify-center text-white font-semibold text-lg"
             style={{ backgroundColor: "rgb(17, 94, 136)" }}
           >
-            JM
+            {user?.name || localStorage.getItem("userName") 
+              ? generateInitials(user?.name || localStorage.getItem("userName") || "") 
+              : (user?.email || localStorage.getItem("userEmail") 
+                ? (user?.email || localStorage.getItem("userEmail"))?.charAt(0).toUpperCase() 
+                : "U")}
           </div>
 
           {/* User Info */}
           {!collapsed && (
             <div className="flex flex-col">
-              <span className="font-semibold text-gray-800">
-                Jessica Martinez
+              <span className="font-semibold text-gray-800 truncate max-w-[140px]">
+                {user?.name || localStorage.getItem("userEmail")?.split('@')[0] || "User"}
               </span>
-              <span className="text-sm text-gray-500">
-                HR Manager
+              <span className="text-sm text-gray-500 capitalize">
+                {user?.role || localStorage.getItem("userRole") || "Team Member"}
               </span>
             </div>
           )}

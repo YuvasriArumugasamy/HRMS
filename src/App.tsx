@@ -18,6 +18,7 @@ import {
   FileText,
   BarChart3,
   SettingsIcon,
+  Bell,
 } from "lucide-react";
 
 // Protected Route Component
@@ -59,6 +60,7 @@ function App() {
           {/* Real Immigration Pages (Newly Built) */}
           <Route path="immigration-compliance" element={<ImmigrationCompliance />} />
           <Route path="immigration-profiles" element={<ImmigrationProfiles />} />
+          <Route path="alerts" element={<PlaceholderPage title="Alerts & Notifications" description="This page is under construction." icon={<Bell size={48} />} />} />
 
           {/* Other Menu Placeholders */}
           <Route path="home" element={<Navigate to="/dashboard" replace />} />

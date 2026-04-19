@@ -15,9 +15,35 @@ import {
   ArrowRight,
   Check,
 } from "lucide-react";
-import React, { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import RHFDatePicker from "@/components/form/RHFDatePicker";
+import { motion, AnimatePresence } from "framer-motion";
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1
+    }
+  }
+};
+
+const itemVariants = {
+  hidden: { y: 20, opacity: 0 },
+  visible: {
+    y: 0,
+    opacity: 1,
+    transition: {
+      type: "spring" as const,
+      stiffness: 100,
+      damping: 15
+    }
+  }
+};
+
+// cardHover was unused
 
 const mockResolutionData = [
   {
@@ -434,15 +460,20 @@ export default function ResolutionHistory() {
             </p>
           </div>
         </div>
-        <button className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm font-medium hover:bg-gray-50 transition-colors shadow-sm">
+        <button className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm font-medium hover:bg-gray-50 transition-colors shadow-sm active:scale-95">
           <Download size={16} />
           Export
         </button>
       </div>
 
       {/* Metrics Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        <div className="bg-white p-5 rounded-2xl border border-gray-100 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)]">
+      <motion.div 
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8"
+      >
+        <motion.div variants={itemVariants} whileHover={{ y: -4 }} className="bg-white p-5 rounded-2xl border border-gray-100 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] transition-shadow hover:shadow-md">
           <div className="flex justify-between items-start mb-4">
             <div className="p-2 bg-blue-50 text-blue-600 rounded-lg">
               <ShieldCheck size={20} />
@@ -450,8 +481,8 @@ export default function ResolutionHistory() {
           </div>
           <p className="text-sm text-gray-500 font-medium">Total</p>
           <p className="text-2xl font-bold text-gray-900 mt-1">12</p>
-        </div>
-        <div className="bg-white p-5 rounded-2xl border border-gray-100 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)]">
+        </motion.div>
+        <motion.div variants={itemVariants} whileHover={{ y: -4 }} className="bg-white p-5 rounded-2xl border border-gray-100 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] transition-shadow hover:shadow-md">
           <div className="flex justify-between items-start mb-4">
             <div className="p-2 bg-red-50 text-red-500 rounded-lg">
               <AlertTriangle size={20} />
@@ -459,8 +490,8 @@ export default function ResolutionHistory() {
           </div>
           <p className="text-sm text-gray-500 font-medium">Critical</p>
           <p className="text-2xl font-bold text-gray-900 mt-1">6</p>
-        </div>
-        <div className="bg-white p-5 rounded-2xl border border-gray-100 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)]">
+        </motion.div>
+        <motion.div variants={itemVariants} whileHover={{ y: -4 }} className="bg-white p-5 rounded-2xl border border-gray-100 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] transition-shadow hover:shadow-md">
           <div className="flex justify-between items-start mb-4">
             <div className="p-2 bg-emerald-50 text-emerald-500 rounded-lg">
               <Clock size={20} />
@@ -468,8 +499,8 @@ export default function ResolutionHistory() {
           </div>
           <p className="text-sm text-gray-500 font-medium">This Week</p>
           <p className="text-2xl font-bold text-gray-900 mt-1">11</p>
-        </div>
-        <div className="bg-white p-5 rounded-2xl border border-gray-100 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)]">
+        </motion.div>
+        <motion.div variants={itemVariants} whileHover={{ y: -4 }} className="bg-white p-5 rounded-2xl border border-gray-100 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] transition-shadow hover:shadow-md">
           <div className="flex justify-between items-start mb-4">
             <div className="p-2 bg-indigo-50 text-indigo-500 rounded-lg">
               <Users size={20} />
@@ -477,8 +508,8 @@ export default function ResolutionHistory() {
           </div>
           <p className="text-sm text-gray-500 font-medium">Employees</p>
           <p className="text-2xl font-bold text-gray-900 mt-1">5</p>
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
 
       {/* Filters */}
       <div className="flex flex-col sm:flex-row gap-3 mb-8">
@@ -526,120 +557,141 @@ export default function ResolutionHistory() {
         </div>
 
         <div className="space-y-6">
-          {filteredData.length === 0 ? (
-            <div className="py-12 text-center text-gray-500 bg-gray-50 rounded-xl border border-dashed border-gray-200">
-              No changes found matching the selected filters.
-            </div>
-          ) : (
-            filteredData.map((emp) => (
-            <div
-              key={emp.id}
-              className="border border-gray-200 rounded-2xl overflow-hidden hover:border-[#1f5f8b]/30 transition-colors shadow-sm"
-            >
-              {/* Employee Header */}
-              <div className="bg-gray-50/80 px-5 py-4 border-b border-gray-200 flex items-center justify-between">
-                <div className="flex items-center gap-3 w-full">
-                  <div className="w-10 h-10 rounded-xl bg-[#1f5f8b] text-white flex items-center justify-center font-bold text-sm shadow-sm flex-shrink-0">
-                    {emp.employeeInitials}
-                  </div>
-                  <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3 flex-1">
-                    <h3 className="font-bold text-gray-900 leading-tight">
-                      {emp.employeeName}
-                    </h3>
-                    <div className="flex items-center gap-2 mt-1 sm:mt-0 text-sm">
-                      <span className="px-2 py-0.5 bg-blue-50 text-[#1f5f8b] font-medium border border-blue-100 rounded-md text-xs">
-                        {emp.badge}
-                      </span>
-                      <span className="text-gray-300">•</span>
-                      <span className="text-gray-500 font-medium text-xs">
-                        {emp.changesCount} changes
-                      </span>
-                    </div>
-                  </div>
-                </div>
-                <button className="px-4 py-1.5 bg-white border border-gray-200 rounded-lg text-xs font-semibold text-gray-700 hover:bg-gray-50 transition-colors shadow-sm shrink-0 ml-4 hidden sm:block">
-                  View
-                </button>
-              </div>
-
-              {/* Changes List */}
-              <div className="p-5 space-y-6">
-                {emp.changes.map((change, index) => (
-                  <div key={change.id}>
-                    <div className="flex gap-4">
-                      {/* Icon */}
-                      <div className="mt-1 shrink-0">
-                        <div
-                          className={`w-10 h-10 rounded-xl flex items-center justify-center ${change.iconBg} text-current shadow-sm`}
-                        >
-                          {change.icon}
-                        </div>
+          <AnimatePresence mode="popLayout">
+            {filteredData.length === 0 ? (
+              <motion.div 
+                key="empty"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="py-12 text-center text-gray-500 bg-gray-50 rounded-xl border border-dashed border-gray-200"
+              >
+                No changes found matching the selected filters.
+              </motion.div>
+            ) : (
+              filteredData.map((emp) => (
+                <motion.div
+                  key={emp.id}
+                  layout
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  transition={{ duration: 0.2 }}
+                  className="border border-gray-200 rounded-2xl overflow-hidden hover:border-[#1f5f8b]/30 transition-colors shadow-sm"
+                >
+                  {/* Employee Header */}
+                  <div className="bg-gray-50/80 px-5 py-4 border-b border-gray-200 flex items-center justify-between">
+                    <div className="flex items-center gap-3 w-full">
+                      <div className="w-10 h-10 rounded-xl bg-[#1f5f8b] text-white flex items-center justify-center font-bold text-sm shadow-sm flex-shrink-0">
+                        {emp.employeeInitials}
                       </div>
-
-                      {/* Content */}
-                      <div className="flex-1 min-w-0">
-                        {/* Title Row */}
-                        <div className="flex flex-wrap items-center gap-2 mb-3">
-                          <span className="font-bold text-gray-900 text-sm">
-                            {change.field}
+                      <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3 flex-1">
+                        <h3 className="font-bold text-gray-900 leading-tight">
+                          {emp.employeeName}
+                        </h3>
+                        <div className="flex items-center gap-2 mt-1 sm:mt-0 text-sm">
+                          <span className="px-2 py-0.5 bg-blue-50 text-[#1f5f8b] font-medium border border-blue-100 rounded-md text-xs">
+                            {emp.badge}
                           </span>
-                          <CategoryBadge category={change.category} />
-                          <SeverityBadge severity={change.severity} />
-                        </div>
-
-                        {/* Value Change Row */}
-                        <div className="flex flex-col lg:flex-row lg:items-center gap-2 lg:gap-3 mb-3">
-                          <div className="flex-1 bg-red-50/50 border border-red-100 rounded-lg p-2.5 min-w-0 relative">
-                            <span className="text-red-500/80 line-through text-sm font-mono truncate block">
-                              {change.oldValue}
-                            </span>
-                          </div>
-                          <div className="flex items-center justify-center lg:px-1 shrink-0">
-                            <ArrowRight size={16} className="text-gray-400" />
-                          </div>
-                          <div className="flex-1 bg-emerald-50/50 border border-emerald-100 rounded-lg p-2.5 min-w-0">
-                            <span className="text-emerald-700 text-sm font-mono truncate block">
-                              {change.newValue}
-                            </span>
-                          </div>
-                        </div>
-
-                        {/* Description block */}
-                        <div className="mb-3">
-                          <div className="bg-blue-50/40 rounded-lg p-3 text-sm text-[#1f5f8b] border border-blue-100/50">
-                            {change.description}
-                          </div>
-                        </div>
-
-                        {/* Footer info */}
-                        <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-gray-500 font-medium">
-                          <div className="flex items-center gap-1.5">
-                            <User size={14} />
-                            <span>{change.updatedBy}</span>
-                          </div>
-                          <div className="flex items-center gap-1.5">
-                            <Clock size={14} />
-                            <span>{change.timeAgo}</span>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <SystemBadge text={change.sourceBadge} />
-                            <span className="text-gray-400">
-                              {change.sourceFlow}
-                            </span>
-                          </div>
+                          <span className="text-gray-300">•</span>
+                          <span className="text-gray-500 font-medium text-xs">
+                            {emp.changesCount} changes
+                          </span>
                         </div>
                       </div>
                     </div>
-
-                    {/* Divider except for last item */}
-                    {index < emp.changes.length - 1 && (
-                      <div className="h-px bg-gray-100 mt-6" />
-                    )}
+                    <button className="px-4 py-1.5 bg-white border border-gray-200 rounded-lg text-xs font-semibold text-gray-700 hover:bg-gray-50 transition-colors shadow-sm shrink-0 ml-4 hidden sm:block active:scale-95">
+                      View
+                    </button>
                   </div>
-                ))}
-              </div>
-            </div>
-          )))}
+
+                  {/* Changes List */}
+                  <div className="p-5 space-y-6">
+                    <AnimatePresence>
+                      {emp.changes.map((change, index) => (
+                        <motion.div 
+                          key={change.id}
+                          initial={{ opacity: 0, x: -10 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: index * 0.05 }}
+                        >
+                          <div className="flex gap-4">
+                            {/* Icon */}
+                            <div className="mt-1 shrink-0">
+                              <div
+                                className={`w-10 h-10 rounded-xl flex items-center justify-center ${change.iconBg} text-current shadow-sm`}
+                              >
+                                {change.icon}
+                              </div>
+                            </div>
+
+                            {/* Content */}
+                            <div className="flex-1 min-w-0">
+                              {/* Title Row */}
+                              <div className="flex flex-wrap items-center gap-2 mb-3">
+                                <span className="font-bold text-gray-900 text-sm">
+                                  {change.field}
+                                </span>
+                                <CategoryBadge category={change.category} />
+                                <SeverityBadge severity={change.severity} />
+                              </div>
+
+                              {/* Value Change Row */}
+                              <div className="flex flex-col lg:flex-row lg:items-center gap-2 lg:gap-3 mb-3">
+                                <div className="flex-1 bg-red-50/50 border border-red-100 rounded-lg p-2.5 min-w-0 relative">
+                                  <span className="text-red-500/80 line-through text-sm font-mono truncate block">
+                                    {change.oldValue}
+                                  </span>
+                                </div>
+                                <div className="flex items-center justify-center lg:px-1 shrink-0">
+                                  <ArrowRight size={16} className="text-gray-400" />
+                                </div>
+                                <div className="flex-1 bg-emerald-50/50 border border-emerald-100 rounded-lg p-2.5 min-w-0">
+                                  <span className="text-emerald-700 text-sm font-mono truncate block">
+                                    {change.newValue}
+                                  </span>
+                                </div>
+                              </div>
+
+                              {/* Description block */}
+                              <div className="mb-3">
+                                <div className="bg-blue-50/40 rounded-lg p-3 text-sm text-[#1f5f8b] border border-blue-100/50">
+                                  {change.description}
+                                </div>
+                              </div>
+
+                              {/* Footer info */}
+                              <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-gray-500 font-medium">
+                                <div className="flex items-center gap-1.5">
+                                  <User size={14} />
+                                  <span>{change.updatedBy}</span>
+                                </div>
+                                <div className="flex items-center gap-1.5">
+                                  <Clock size={14} />
+                                  <span>{change.timeAgo}</span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                  <SystemBadge text={change.sourceBadge} />
+                                  <span className="text-gray-400">
+                                    {change.sourceFlow}
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Divider except for last item */}
+                          {index < emp.changes.length - 1 && (
+                            <div className="h-px bg-gray-100 mt-6" />
+                          )}
+                        </motion.div>
+                      ))}
+                    </AnimatePresence>
+                  </div>
+                </motion.div>
+              ))
+            )}
+          </AnimatePresence>
         </div>
       </div>
     </div>

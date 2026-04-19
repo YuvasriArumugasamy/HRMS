@@ -10,6 +10,7 @@ import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import type { AppDispatch, RootState } from "../app/store";
+import { logout } from "@/modules/auth/authSlice";
 
 export default function Header() {
   const dispatch = useDispatch<AppDispatch>();
@@ -44,7 +45,16 @@ export default function Header() {
   }, []);
 
   const handleLogout = () => {
-    dispatch({ type: "auth/logout" });
+    // Clear Redux state
+    dispatch(logout());
+    
+    // Clear localStorage
+    localStorage.removeItem("isAuthenticated");
+    localStorage.removeItem("userEmail");
+    localStorage.removeItem("userRole");
+    localStorage.removeItem("userName");
+    
+    // Navigate to login
     navigate("/login", { replace: true });
   };
 
@@ -55,7 +65,7 @@ export default function Header() {
 
   return (
     <header
-      className="py-5 px-6 flex items-center z-30 justify-between shadow-xl relative"
+      className="py-5 px-6 flex items-center z-[1000] justify-between shadow-xl relative"
       style={{
         background: "linear-gradient(135deg, #115e88 10%, #0d4d70 45%, #0a3d5c 100%)",
       }}
@@ -136,7 +146,7 @@ export default function Header() {
             </div>
 
             <span className="text-white text-sm font-medium leading-none">
-              {user?.name || "Admin"}
+              {user?.name || localStorage.getItem("userEmail")?.split('@')[0] || "Admin"}
             </span>
 
             <ChevronDown
@@ -150,10 +160,10 @@ export default function Header() {
             <div className="absolute right-0 mt-2.5 w-52 bg-white rounded-xl shadow-2xl border border-gray-100 py-1.5 z-50 overflow-hidden text-gray-800">
               <div className="px-4 py-2.5 border-b border-gray-100 mb-1">
                 <p className="text-sm font-semibold truncate">
-                  {user?.name || "HRMS Admin"}
+                  {user?.name || localStorage.getItem("userEmail")?.split('@')[0] || "HRMS Admin"}
                 </p>
                 <p className="text-xs text-gray-400 truncate">
-                  {user?.email || "admin@hrms.com"}
+                  {user?.email || localStorage.getItem("userEmail") || "admin@hrms.com"}
                 </p>
               </div>
 
