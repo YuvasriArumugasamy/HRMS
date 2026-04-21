@@ -54,8 +54,8 @@ export const ImmigrationCompliance = () => {
   }, [dispatch]);
 
   // Transform API data to internal format
-  const employeeData: EmployeeCompliance[] = (complianceConflicts || []).map((conflict: any, index: number) => {
-    const issues: ComplianceIssue[] = Object.keys(conflict.differences).map(field => ({
+  const employeeData: EmployeeCompliance[] = (Array.isArray(complianceConflicts) ? complianceConflicts : []).map((conflict: any, index: number) => {
+    const issues: ComplianceIssue[] = Object.keys(conflict?.differences || {}).map(field => ({
       field,
       severity: 'Critical', // Default to Critical or derive from field if possible
       smsValue: String(conflict.differences[field].ashtonCentral),
@@ -65,8 +65,8 @@ export const ImmigrationCompliance = () => {
 
     return {
       id: conflict.empCode || index, // Use empCode as ID if possible
-      name: conflict.name,
-      initials: conflict.name.split(' ').map((n: string) => n[0]).join('').toUpperCase().substring(0, 2),
+      name: conflict.name || 'Unknown',
+      initials: (conflict.name || 'Unknown').split(' ').map((n: string) => n[0]).join('').toUpperCase().substring(0, 2),
       avatarBg: '#1e3a5f',
       niNumber: conflict.empCode,
       overallSeverity: 'Critical',
