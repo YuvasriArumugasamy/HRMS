@@ -48,9 +48,9 @@ export const fetchImmigrationProfiles = createAsyncThunk(
 // Async thunk to save SMS data
 export const saveSMSData = createAsyncThunk(
   "immigration/saveSMSData",
-  async ({ employeeId, smsData }: { employeeId: string; smsData: any }, { rejectWithValue }) => {
+  async ({ profileId, smsData }: { profileId: string; smsData: any }, { rejectWithValue }) => {
     try {
-      const response = await immigrationService.saveSMSData(employeeId, smsData);
+      const response = await immigrationService.saveSMSData(profileId, smsData);
       return response;
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || "Failed to save SMS data");

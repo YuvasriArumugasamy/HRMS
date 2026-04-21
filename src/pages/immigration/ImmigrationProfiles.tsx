@@ -4,9 +4,58 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchImmigrationProfiles } from '@/modules/immigration/immigrationSlice';
 import type { AppDispatch, RootState } from '@/app/store';
 import { SlidersHorizontal, ChevronDown, ChevronUp, Clock, Search, CheckCircle, AlertTriangle, MapPin, Eye, FileText, Check, X, Loader2, Plus } from 'lucide-react';
+import { ProfileDetailModal } from './ProfileDetailModal';
 import './ImmigrationProfiles.css';
 
-// Hardcoded profiles removed as they are now fetched from the API
+// ─── Fallback mock profiles (shown when API returns no data) ────────────────
+const MOCK_PROFILES = [
+  {
+    id: 'mock-1', code: 'EMP-2024-001', name: 'Priya Nair', initials: 'PN',
+    avatarColor: 'bg-[#1e3a5f]', nationality: 'Indian',
+    niNumber: 'AB123456C', passport: 'P12345678',
+    permitExpiry: '15 Dec 2025', expiryStatus: '238 days left',
+    jobTitle: 'Care Assistant', isKey: true, department: 'Care Staff',
+    dataIssues: { text: 'No issues', type: 'success' },
+    status: { text: 'Clear', type: 'success' },
+  },
+  {
+    id: 'mock-2', code: 'EMP-2024-002', name: 'Maria Santos', initials: 'MS',
+    avatarColor: 'bg-[#246e8c]', nationality: 'Filipino',
+    niNumber: 'CD234567D', passport: 'P87654321',
+    permitExpiry: '22 Mar 2026', expiryStatus: null,
+    jobTitle: 'Senior Nurse', isKey: false, department: 'Nurses',
+    dataIssues: { text: 'Manual verification', type: 'warning' },
+    status: { text: 'Warning', type: 'warning' },
+  },
+  {
+    id: 'mock-3', code: 'EMP-2024-003', name: 'Dawit Bekele', initials: 'DB',
+    avatarColor: 'bg-[#a327ff]', nationality: 'Ethiopian',
+    niNumber: 'EF345678E', passport: 'P22334455',
+    permitExpiry: '05 Aug 2024', expiryStatus: 'Expired',
+    jobTitle: 'Healthcare Support Worker', isKey: false, department: 'Care Staff',
+    dataIssues: { text: 'Manual verification', type: 'warning' },
+    status: { text: 'Warning', type: 'warning' },
+  },
+  {
+    id: 'mock-4', code: 'EMP-2024-004', name: 'Aneta Kowalski', initials: 'AK',
+    avatarColor: 'bg-[#1e3a5f]', nationality: 'Polish',
+    niNumber: 'GH456789F', passport: 'P66778899',
+    permitExpiry: '30 Nov 2025', expiryStatus: '52 days left',
+    jobTitle: 'Registered Nurse', isKey: true, department: 'Nurses',
+    dataIssues: { text: 'No issues', type: 'success' },
+    status: { text: 'Clear', type: 'success' },
+  },
+  {
+    id: 'mock-5', code: 'EMP-2024-005', name: 'James Osei', initials: 'JO',
+    avatarColor: 'bg-[#10b981]', nationality: 'Ghanaian',
+    niNumber: 'IJ567890G', passport: 'P55443322',
+    permitExpiry: 'N/A', expiryStatus: null,
+    jobTitle: 'Team Leader', isKey: true, department: 'Admin',
+    dataIssues: { text: 'No issues', type: 'success' },
+    status: { text: 'Clear', type: 'success' },
+  },
+];
+// ─────────────────────────────────────────────────────────────────────────────
 
 export const ImmigrationProfiles = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -18,6 +67,8 @@ export const ImmigrationProfiles = () => {
   const [nationality, setNationality] = useState('All');
   const [quickFilter, setQuickFilter] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedProfileId, setSelectedProfileId] = useState<string | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     dispatch(fetchImmigrationProfiles({ page: 1, limit: 100 }));
@@ -37,8 +88,10 @@ export const ImmigrationProfiles = () => {
     return {
       id: p._id,
       code: p.empCode,
-      name: p.employeeName || 'Unknown Employee', // Needs to be confirmed if backend returns name
-      initials: (p.employeeName || 'U E').split(' ').map((n: string) => n[0]).join('').toUpperCase().substring(0, 2),
+      name: p.employeeName || p.firstName
+        ? `${p.firstName || ''} ${p.lastName || ''}`.trim()
+        : (p.empCode || 'Unknown Employee'),
+      initials: ((p.employeeName || p.empCode || 'UN')).split(/[\s-]/).map((n: string) => n[0]).join('').toUpperCase().substring(0, 2),
       avatarColor: 'bg-[#1e3a5f]',
       nationality: p.smsData?.nationality || 'N/A',
       niNumber: p.smsData?.niNumber || 'N/A',
@@ -79,7 +132,10 @@ export const ImmigrationProfiles = () => {
     setQuickFilter(false);
   };
 
-  const filteredProfiles = initialProfiles.filter(profile => {
+  // Use real API data; fall back to mock profiles only when API has no records
+  const activeProfiles = initialProfiles.length > 0 ? initialProfiles : (!isLoading && !error ? MOCK_PROFILES : []);
+
+  const filteredProfiles = activeProfiles.filter(profile => {
     if (compliance !== 'All' && profile.status.text !== compliance) return false;
     if (department !== 'All' && profile.department !== department) return false;
     if (nationality !== 'All' && profile.nationality !== nationality) return false;
@@ -124,6 +180,12 @@ export const ImmigrationProfiles = () => {
 
   const navigate = useNavigate();
 
+  const handleViewProfile = (id: string) => {
+    setSelectedProfileId(id);
+    setIsModalOpen(true);
+  };
+
+  const isMockData = initialProfiles.length === 0 && !isLoading && !error;
   const clearCount = filteredProfiles.filter(p => p.status.text === 'Clear').length;
   const issuesCount = filteredProfiles.filter(p => p.status.text !== 'Clear').length;
 
@@ -133,7 +195,14 @@ export const ImmigrationProfiles = () => {
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div className="profiles-header">
           <h1 className="text-2xl font-bold text-[#001f3f]">Immigration Profiles</h1>
-          <p className="text-gray-500 mt-1 text-[15px]">Complete immigration employee records with compliance tracking</p>
+          <p className="text-gray-500 mt-1 text-[15px]">
+            Complete immigration employee records with compliance tracking
+            {isMockData && (
+              <span className="ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-bold bg-amber-100 text-amber-700 border border-amber-300">
+                Demo Data
+              </span>
+            )}
+          </p>
         </div>
         <button 
           onClick={() => navigate('/immigration-sms-data-entry')}
@@ -408,10 +477,13 @@ export const ImmigrationProfiles = () => {
                     
                     {/* Actions */}
                     <td className="px-6 py-4 whitespace-nowrap text-right">
-                      <Link to={`/employees/${profile.id}`} className="inline-flex items-center space-x-1.5 text-[#1e7498] hover:text-[#13506b] font-bold text-[13px] px-2 transition-colors">
+                      <button 
+                        onClick={() => handleViewProfile(profile.id)}
+                        className="inline-flex items-center space-x-1.5 text-[#1e7498] hover:bg-[#246e8c] hover:text-white font-bold text-[13px] px-3 py-1.5 rounded-lg transition-all duration-200"
+                      >
                         <Eye size={16} strokeWidth={2.5} />
                         <span>View</span>
-                      </Link>
+                      </button>
                     </td>
                   </tr>
                 ))
@@ -430,9 +502,19 @@ export const ImmigrationProfiles = () => {
         {/* Footer */}
         <div className="bg-[#fafbfc] border-t border-gray-200 px-6 py-4 flex items-center text-[13px] text-gray-500 font-medium">
           <FileText size={16} className="mr-2 text-gray-400" />
-          Showing <span className="font-bold text-gray-700 mx-1">{filteredProfiles.length}</span> of <span className="font-bold text-gray-700 mx-1">{initialProfiles.length}</span> immigration profiles
+          Showing <span className="font-bold text-gray-700 mx-1">{filteredProfiles.length}</span> of <span className="font-bold text-gray-700 mx-1">{activeProfiles.length}</span> immigration profiles
+          {isMockData && <span className="ml-2 text-amber-600 font-semibold">(demo data — connect API for live records)</span>}
         </div>
       </div>
+
+      {/* Profile Detail Modal */}
+      {selectedProfileId && (
+        <ProfileDetailModal 
+          profileId={selectedProfileId}
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+        />
+      )}
     </div>
   );
 };

@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useForm, FormProvider } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
-import { ChevronLeft, User, Briefcase, DollarSign, Calendar, ShieldCheck, Save, Loader2 } from 'lucide-react';
+import { ChevronLeft, User, Briefcase, DollarSign, Calendar, ShieldCheck, Save, Loader2, Wand2 } from 'lucide-react';
 import type { AppDispatch, RootState } from '@/app/store';
 import { fetchImmigrationProfiles, saveSMSData } from '@/modules/immigration/immigrationSlice';
 import RHFTextField from '@/components/form/RHFTextField';
@@ -84,8 +84,8 @@ export const SMSDataEntry = () => {
   const onSubmit = async (data: SMSFormData) => {
     setIsSubmitting(true);
     try {
-      const { employeeId, ...smsData } = data;
-      await dispatch(saveSMSData({ employeeId, smsData })).unwrap();
+      const { employeeId: profileId, ...smsData } = data;
+      await dispatch(saveSMSData({ profileId, smsData })).unwrap();
       navigate('/immigration-profiles');
     } catch (error) {
       console.error('Failed to save SMS data:', error);
@@ -94,10 +94,56 @@ export const SMSDataEntry = () => {
     }
   };
 
-  const employeeOptions = immigrationProfiles.map((emp: any) => ({
-    label: `${emp.employeeName} (${emp.empCode})`,
-    value: emp.employeeId || emp._id, // Prefer employeeId for linking
+  // ─── Mock employee list (fallback when API returns no data) ─────────────
+  const MOCK_EMPLOYEE_OPTIONS = [
+    { label: 'Priya Nair (EMP-2024-001)',              value: 'mock-emp-001' },
+    { label: 'Maria Santos (EMP-2024-002)',             value: 'mock-emp-002' },
+    { label: 'Dawit Bekele (EMP-2024-003)',             value: 'mock-emp-003' },
+    { label: 'Aneta Kowalski (EMP-2024-004)',           value: 'mock-emp-004' },
+    { label: 'James Osei (EMP-2024-005)',               value: 'mock-emp-005' },
+  ];
+  // ─────────────────────────────────────────────────────────────────────────
+
+  // ─── Fill all fields with sample / test data ─────────────────────────────
+  const fillSampleData = () => {
+    if (immigrationProfiles.length > 0) {
+      // Real API employee — pick first one
+      const first = immigrationProfiles[0] as any;
+      setValue('employeeId', first._id || first.employeeId);
+    } else {
+      // No real data — pick first mock employee
+      setValue('employeeId', 'mock-emp-001');
+    }
+    setValue('niNumber',        'AB123456C');
+    setValue('passportNumber',  'GB0123456');
+    setValue('contactNumber',   '07712 345678');
+    setValue('email',           'priya.nair@ashtoncare.com');
+    setValue('visaExpiry',      new Date('2025-12-31'));
+    setValue('address',         '42 Maple Street, Manchester, M1 2AB');
+    setValue('workLocation',    'Manchester HQ');
+    setValue('designation',     'Care Assistant');
+    setValue('hourlyRate',      '12.50');
+    setValue('contractHours',   '37.5');
+    setValue('deductions',      true);
+    setValue('dependents',      false);
+    setValue('ssp',             true);
+    setValue('smp',             false);
+    setValue('unpaidLeave',     false);
+  };
+  // ─────────────────────────────────────────────────────────────────────────
+
+  // Build dropdown options — use empCode as label fallback (API has no employeeName)
+  const realEmployeeOptions = immigrationProfiles.map((emp: any) => ({
+    label: emp.employeeName
+      ? `${emp.employeeName} (${emp.empCode})`
+      : emp.empCode || emp._id,
+    value: emp._id || emp.employeeId,
   }));
+
+  // Show real employees if available, otherwise show mock list
+  const employeeOptions = realEmployeeOptions.length > 0
+    ? realEmployeeOptions
+    : MOCK_EMPLOYEE_OPTIONS;
 
   return (
     <div className="sms-entry-page p-8 max-w-5xl mx-auto space-y-8 bg-[#fafbfc] min-h-screen">
@@ -110,9 +156,20 @@ export const SMSDataEntry = () => {
         Back to Immigration Profiles
       </Link>
 
-      <div className="sms-entry-header">
-        <h1 className="text-3xl font-extrabold text-[#001f3f]">SMS Data Entry</h1>
-        <p className="text-gray-500 mt-1 text-[15px]">Enter immigration employee data for SMS system synchronization</p>
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4">
+        <div className="sms-entry-header">
+          <h1 className="text-3xl font-extrabold text-[#001f3f]">SMS Data Entry</h1>
+          <p className="text-gray-500 mt-1 text-[15px]">Enter immigration employee data for SMS system synchronization</p>
+        </div>
+        {/* Fill sample data button — for testing / demo purposes */}
+        <button
+          type="button"
+          onClick={fillSampleData}
+          className="flex items-center space-x-2 bg-amber-50 border border-amber-300 text-amber-700 px-5 py-2.5 rounded-xl font-bold text-[13px] hover:bg-amber-100 transition-all transform active:scale-95 shadow-sm whitespace-nowrap"
+        >
+          <Wand2 size={16} />
+          <span>Fill Sample Data</span>
+        </button>
       </div>
 
       <FormProvider {...methods}>
