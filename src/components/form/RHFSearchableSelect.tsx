@@ -13,6 +13,7 @@ interface RHFSearchableSelectProps {
   onAddClick?: (searchValue: string) => void;
   type?: "default" | "employee";
   multiple?: boolean;
+  rules?: any;
   [key: string]: any;
 }
 
@@ -32,6 +33,7 @@ export default function RHFSearchableSelect({
   type = "default",
   multiple,
   resolvedRenderOption,
+  rules,
   ...props
 }: RHFSearchableSelectProps) {
   const { control } = useFormContext();
@@ -41,6 +43,7 @@ export default function RHFSearchableSelect({
     <Controller
       name={name}
       control={control}
+      rules={rules}
       render={({ field, fieldState: { error } }) => (
         <SearchableSelect
           {...props}

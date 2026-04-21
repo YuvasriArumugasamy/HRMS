@@ -6,7 +6,6 @@ import {
   History,
   Bell,
   Building2,
-  Briefcase,
   DollarSign,
   FileText,
   BarChart3,

@@ -172,7 +172,7 @@ export default function Departments() {
     setDesigFormName('');
   };
 
-  const startEditDesig = (deptId: number, desig: Designation) => {
+  const startEditDesig = (_deptId: number, desig: Designation) => {
     setAddingDesigDeptId(null);
     setEditingDesigId(desig.id);
     setDesigFormName(desig.name);

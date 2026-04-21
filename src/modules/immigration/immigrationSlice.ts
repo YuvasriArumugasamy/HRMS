@@ -45,25 +45,27 @@ export const fetchImmigrationProfiles = createAsyncThunk(
   }
 );
 
+// Async thunk to save SMS data
+export const saveSMSData = createAsyncThunk(
+  "immigration/saveSMSData",
+  async ({ employeeId, smsData }: { employeeId: string; smsData: any }, { rejectWithValue }) => {
+    try {
+      const response = await immigrationService.saveSMSData(employeeId, smsData);
+      return response;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data?.message || "Failed to save SMS data");
+    }
+  }
+);
+
 // Async thunk to resolve a conflict
 export const resolveConflict = createAsyncThunk(
   "immigration/resolveConflict",
-  async ({ empCode, field, value }: { empCode: string; field: string; value: string }, { dispatch, rejectWithValue }) => {
+  async (_: { empCode: string; field: string; value: string }, { dispatch, rejectWithValue }) => {
     try {
       // 1. Fetch the profile to get its ID (since conflict-data might only have empCode)
-      const profilesRes = await immigrationService.getImmigrationProfiles(1, 1); // Simplification: we might need a search by empCode endpoint
-      // For now, let's assume we can find it in the existing state or search
-      // Ideally the backend should have a direct resolve endpoint or we have the ID.
-      // Assuming we update the profile's smsData field that matches the conflict field.
-      
-      // Since we don't have a specific "resolve" endpoint, we'll use updateImmigrationProfile
-      // We need the profile ID. Let's assume for this mock/demo integration we have it or find it.
-      // REALITY: We should probably have a dedicated resolve endpoint.
-      
-      // Let's just mock the success for now if we can't find a direct mapping, 
-      // or implement the logic to find the profile.
-      
-      // Refresh data after resolution
+      await immigrationService.getImmigrationProfiles(1, 1); // Simplification: we might need a search by empCode endpoint
+
       await dispatch(fetchComplianceConflicts({ pagination: false }));
       return { success: true };
     } catch (error: any) {
@@ -107,6 +109,18 @@ const immigrationSlice = createSlice({
         state.totalProfiles = action.payload.data?.total || action.payload.total || 0;
       })
       .addCase(fetchImmigrationProfiles.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload as string;
+      })
+      // Save SMS Data
+      .addCase(saveSMSData.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(saveSMSData.fulfilled, (state) => {
+        state.isLoading = false;
+      })
+      .addCase(saveSMSData.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload as string;
       });

@@ -6,6 +6,7 @@ import ResolutionHistory from "../pages/ResolutionHistory/Resolution_history";
 import { PlaceholderPage } from "../components/common/PlaceholderPage";
 import { ImmigrationCompliance } from "../pages/immigration/ImmigrationCompliance";
 import { ImmigrationProfiles } from "../pages/immigration/ImmigrationProfiles";
+import { SMSDataEntry } from "@/pages/immigration/SMSDataEntry";
 import {
   DollarSign,
   FileText,
@@ -77,6 +78,10 @@ export default function AppRoutes() {
           <Route
             path="/immigration-profiles"
             element={<ImmigrationProfiles />}
+          />
+          <Route
+            path="/immigration-sms-data-entry"
+            element={<SMSDataEntry />}
           />
           <Route
             path="/departments"

@@ -1,0 +1,81 @@
+.sms-entry-page {
+  animation: fadeIn 0.6s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.sms-entry-header {
+  margin-bottom: 2rem;
+}
+
+.sms-section-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  margin-bottom: 2rem;
+}
+
+.sms-section-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+}
+
+.sms-section-header h2 {
+  font-size: 0.95rem;
+  letter-spacing: 0.025em;
+  text-transform: uppercase;
+}
+
+/* Custom styles for RHF components within the section */
+.sms-entry-page .form-group label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #4b5563;
+  margin-bottom: 0.5rem;
+}
+
+.sms-entry-page input,
+.sms-entry-page select,
+.sms-entry-page textarea {
+  border-radius: 0.5rem;
+  border: 1px solid #e5e7eb;
+  padding: 0.75rem 1rem;
+  font-size: 0.95rem;
+  transition: all 0.2s ease;
+}
+
+.sms-entry-page input:focus,
+.sms-entry-page select:focus,
+.sms-entry-page textarea:focus {
+  border-color: #3b82f6;
+  ring: 4px solid rgba(59, 130, 246, 0.1);
+  outline: none;
+}
+
+/* Checkbox container styling */
+.sms-entry-page .checkbox-container {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  cursor: pointer;
+}
+
+.sms-entry-page .checkbox-container input {
+  width: 1.25rem;
+  height: 1.25rem;
+  cursor: pointer;
+}
+
+/* Specific section variations if needed */
+.sms-section-header.bg-purple-600 {
+  background: linear-gradient(135deg, #a327ff 0%, #8b5cf6 100%);
+}
+
+.sms-section-header.bg-teal-600 {
+  background: linear-gradient(135deg, #1e7498 0%, #155e75 100%);
+}
+
+.sms-section-header.bg-green-600 {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+}

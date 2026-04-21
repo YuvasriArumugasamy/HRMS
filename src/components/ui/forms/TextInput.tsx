@@ -53,6 +53,7 @@ export default function TextInput({
 
         <input
           {...rest}
+          required={required}
           type={inputType}
           placeholder={
             placeholder || (label ? `Enter ${label.toLowerCase()}` : "")

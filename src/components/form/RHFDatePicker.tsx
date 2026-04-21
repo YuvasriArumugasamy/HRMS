@@ -10,6 +10,7 @@ interface RHFDatePickerProps {
   required?: boolean;
   disabled?: boolean;
   containClassName?: string;
+  rules?: any;
 }
 
 export default function RHFDatePicker({
@@ -21,6 +22,7 @@ export default function RHFDatePicker({
   required = true,
   disabled = false,
   containClassName = "",
+  rules,
 }: RHFDatePickerProps) {
   const {
     control,
@@ -33,6 +35,7 @@ export default function RHFDatePicker({
     <Controller
       name={name}
       control={control}
+      rules={rules || (required ? { required: `${label || "Field"} is required` } : undefined)}
       render={({ field: { value, onChange } }) => (
         <DatePicker
           label={label}

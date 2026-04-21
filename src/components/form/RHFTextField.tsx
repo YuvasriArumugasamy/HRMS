@@ -6,12 +6,14 @@ interface RHFTextFieldProps {
   label?: string;
   type?: string;
   placeholder?: string;
+  rules?: any;
   [key: string]: any;
 }
 
 export default function RHFTextField({
   name,
   type = "text",
+  rules,
   ...props
 }: RHFTextFieldProps) {
   const { control } = useFormContext();
@@ -20,6 +22,7 @@ export default function RHFTextField({
     <Controller
       name={name}
       control={control}
+      rules={rules}
       render={({ field, fieldState: { error } }) => (
         <TextInput
           {...field}

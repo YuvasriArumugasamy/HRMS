@@ -8,6 +8,7 @@ import { ImmigrationProfiles } from "./pages/immigration/ImmigrationProfiles";
 import ResolutionHistory from "./pages/ResolutionHistory/Resolution_history";
 import Departments from "./pages/Departments/Departments";
 import { Dashboard } from "./pages/dashboard/Dashboard";
+import { SMSDataEntry } from "./pages/immigration/SMSDataEntry";
 import { PlaceholderPage } from "@/components/common/PlaceholderPage";
 import type { RootState } from "./app/store";
 import {
@@ -60,6 +61,7 @@ function App() {
           {/* Real Immigration Pages (Newly Built) */}
           <Route path="immigration-compliance" element={<ImmigrationCompliance />} />
           <Route path="immigration-profiles" element={<ImmigrationProfiles />} />
+          <Route path="/immigration-sms-data-entry" element={<SMSDataEntry />} />
           <Route path="alerts" element={<PlaceholderPage title="Alerts & Notifications" description="This page is under construction." icon={<Bell size={48} />} />} />
 
           {/* Other Menu Placeholders */}

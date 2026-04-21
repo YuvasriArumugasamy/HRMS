@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Upload, FileDown, RefreshCw, Search, AlertTriangle, Clock, Users, Check, X, Shield, Loader2 } from 'lucide-react';
 import { useForm, FormProvider } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
@@ -48,7 +48,6 @@ export const ImmigrationCompliance = () => {
   const [selectedEmployeeId, setSelectedEmployeeId] = useState<number | string | null>(null);
   const [resolveModal, setResolveModal] = useState<{ employee: EmployeeCompliance; issue: ComplianceIssue } | null>(null);
   const [selectedSource, setSelectedSource] = useState<'sms' | 'hrms'>('sms');
-  const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     dispatch(fetchComplianceConflicts({ pagination: false }));

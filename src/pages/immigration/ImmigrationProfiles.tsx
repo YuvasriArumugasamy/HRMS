@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchImmigrationProfiles } from '@/modules/immigration/immigrationSlice';
 import type { AppDispatch, RootState } from '@/app/store';
-import { SlidersHorizontal, ChevronDown, ChevronUp, Clock, Search, CheckCircle, AlertTriangle, MapPin, Eye, ChevronRight, FileText, Check, X, Loader2 } from 'lucide-react';
+import { SlidersHorizontal, ChevronDown, ChevronUp, Clock, Search, CheckCircle, AlertTriangle, MapPin, Eye, FileText, Check, X, Loader2, Plus } from 'lucide-react';
 import './ImmigrationProfiles.css';
 
 // Hardcoded profiles removed as they are now fetched from the API
@@ -122,15 +122,26 @@ export const ImmigrationProfiles = () => {
     );
   };
 
+  const navigate = useNavigate();
+
   const clearCount = filteredProfiles.filter(p => p.status.text === 'Clear').length;
   const issuesCount = filteredProfiles.filter(p => p.status.text !== 'Clear').length;
 
   return (
     <div className="p-8 max-w-7xl mx-auto space-y-8 bg-[#fafbfc] min-h-screen">
       {/* Header */}
-      <div className="profiles-header">
-        <h1 className="text-2xl font-bold text-[#001f3f]">Immigration Profiles</h1>
-        <p className="text-gray-500 mt-1 text-[15px]">Complete immigration employee records with compliance tracking</p>
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div className="profiles-header">
+          <h1 className="text-2xl font-bold text-[#001f3f]">Immigration Profiles</h1>
+          <p className="text-gray-500 mt-1 text-[15px]">Complete immigration employee records with compliance tracking</p>
+        </div>
+        <button 
+          onClick={() => navigate('/immigration-sms-data-entry')}
+          className="flex items-center space-x-2 bg-[#1b6b8f] text-white px-6 py-2.5 rounded-lg font-bold shadow-md hover:bg-[#13506b] transition-all transform active:scale-95 whitespace-nowrap"
+        >
+          <Plus size={18} />
+          <span>Add SMS Data</span>
+        </button>
       </div>
 
       {/* Filters Section */}

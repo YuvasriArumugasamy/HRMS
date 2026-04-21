@@ -358,31 +358,33 @@ export function SearchableSelect<T = any>({
           <div className="absolute left-0 top-full mt-2 w-full z-30 bg-white border border-gray-200 rounded-md shadow-lg">
             {/* Search Input */}
             {shouldShowSearch && (
-              <div className="p-3 border-b border-gray-100">
-                <TextInput
-                  placeholder="Search..."
-                  value={search}
-                  onChange={(e) => {
-                    const val = e.target.value;
-                    if (val === " ") return;
-                    setSearch(val.trimStart());
-                  }}
-                  onClick={(e) => e.stopPropagation()}
-                  leftIcon={
+              <div className="p-4 border-b border-gray-100 bg-white">
+                <div className="relative">
                     <svg
-                      className="w-4 h-4 text-gray-400"
+                      className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-slate-400 z-10"
                       fill="none"
                       stroke="currentColor"
-                      strokeWidth="2"
+                      strokeWidth="2.5"
                       viewBox="0 0 24 24"
                     >
                       <circle cx="11" cy="11" r="8" />
                       <path d="m21 21-4.35-4.35" />
                     </svg>
-                  }
-                  autoFocus
-                  className="h-10!"
-                />
+                    <input
+                      type="text"
+                      placeholder="Search..."
+                      value={search}
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        if (val === " ") return;
+                        setSearch(val.trimStart());
+                      }}
+                      onClick={(e) => e.stopPropagation()}
+                      autoFocus
+                      style={{ paddingLeft: '46px' }}
+                      className="w-full h-11 pr-4 rounded-[14px] bg-white border border-[#1b6b8f] focus:outline-none focus:ring-2 focus:ring-[#1b6b8f]/20 text-[15px] text-slate-700 placeholder-slate-400 transition-all shadow-sm"
+                    />
+                </div>
               </div>
             )}
 

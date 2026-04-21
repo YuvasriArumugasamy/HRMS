@@ -23,10 +23,12 @@ export const immigrationService = {
     return response.data;
   },
 
-  // Resolve a conflict (this might involve updating the profile)
-  // For now, we'll assume updating the profile is the way to resolve
-  updateImmigrationProfile: async (id: string, data: any) => {
-    const response = await api.put(`immigration-profiles/${id}`, data);
+  // Save SMS data for an employee
+  saveSMSData: async (employeeId: string, smsData: any) => {
+    const response = await api.post(`api/v1/immigration/sms-data`, {
+      employeeId,
+      ...smsData,
+    });
     return response.data;
   },
 };
